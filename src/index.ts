@@ -54,7 +54,6 @@ const injectSDK = () => {
         <html lang="ko">
           <head>
             <meta charset="utf-8">
-            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
             <script async type="text/javascript" src="${cdnHost}${vendorSrc}" charset="utf-8"></script>
             <script async type="text/javascript" src="${cdnHost}${sdkSrc}" charset="utf-8"></script>
             <link rel="stylesheet" href="${cdnHost}${styleSrc}">
