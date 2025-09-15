@@ -6,12 +6,13 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
       name: "ThatzfitSDKInjector",
-      fileName: "ThatzfitSDKInjector.js",
       formats: ["iife"],
     },
     rollupOptions: {
       external: [],
-      output: {},
+      output: {
+        entryFileNames: "ThatzfitSDKInjector.js",
+      },
     },
   },
 });
