@@ -1,11 +1,11 @@
 const injectSDK = () => {
   const userAgent = window.navigator.userAgent;
 
-  const pastBrowerRegex =
+  const pastBrowserRegex =
     /(Opera\/.+Opera Mobi.+Version\/((10|11)\.0|11\.1|11\.5|12\.(0|1)))|(Opera\/((10|11)\.0|11\.1|11\.5|12\.(0|1)).+Opera Mobi)|(Opera Mobi.+Opera(?:\/|\s+)((10|11)\.0|11\.1|11\.5|12\.(0|1)))|(SamsungBrowser\/((4|5)\.0|5\.4))|(IEMobile[ /](10|11)\.0)|(Android Eclair)|(Android Froyo)|(Android Gingerbread)|(Android Honeycomb)|(PlayBook.+RIM Tablet OS (7\.0|10\.0)\.\d+)|((Black[bB]erry|BB10).+Version\/(7\.0|10\.0)\.\d+)|(Trident\/6\.0)|(Trident\/5\.0)|(Trident\/4\.0)|(([MS]?IE) (5\.5|([6-9]|10)\.0))/;
 
   // 구형 브라우저면 inject X
-  if (pastBrowerRegex.test(userAgent)) {
+  if (pastBrowserRegex.test(userAgent) || !window.navigator.cookieEnabled) {
     return;
   }
 
@@ -19,9 +19,9 @@ const injectSDK = () => {
     }
 
     pluginDiv.innerHTML = `
-    <div id="thatzfit-entry></div>
+    <div id="thatzfit-entry"></div>
     <div id="thatzfit-iframe-wrapper" style="display: none;">
-      <iframe id="thatzfit-iframe" style="position:relative !important;z-index:999999 !important;display:block !important;color-scheme:normal !important;white-space:normal !important;"></iframe>
+      <iframe id="thatzfit-iframe" title="Thatzfit" style="position:relative !important;z-index:999999 !important;display:block !important;color-scheme:normal !important;white-space:normal !important;border:none !important;"></iframe>
     </div>
     `;
 
