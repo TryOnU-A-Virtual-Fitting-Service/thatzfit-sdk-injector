@@ -20,7 +20,7 @@ const injectSDK = () => {
 
     pluginDiv.innerHTML = `
     <div id="thatzfit-entry"></div>
-    <div id="thatzfit-iframe-wrapper" style="display:none;">
+    <div id="thatzfit-iframe-wrapper">
       <iframe id="thatzfit-iframe" title="Thatzfit" style="position:relative !important;z-index:999999 !important;display:block !important;color-scheme:normal !important;white-space:normal !important;border:none !important;"></iframe>
     </div>
     `;
@@ -31,7 +31,6 @@ const injectSDK = () => {
   let isInjected = false;
 
   const loadSDK = () => {
-    console.log('loadSDK');
     const injectIframe = ({
       vendorSrc,
       sdkSrc,
@@ -44,15 +43,12 @@ const injectSDK = () => {
       const cdnHost = "https://cdn.thatzfit.com";
       const iframeDocument =
         iframe.contentDocument || iframe.contentWindow?.document;
-      console.log(iframe);
-      console.log(iframeDocument);
 
       if (!iframeDocument) {
         return;
       }
 
       iframeDocument.open();
-      console.log('write');
       iframeDocument.write(`
         <!DOCTYPE html>
         <html lang="ko">
@@ -68,42 +64,30 @@ const injectSDK = () => {
         </html>
       `);
       iframeDocument.close();
-      console.log(iframeDocument);
     };
 
     injectIframe({
       vendorSrc: "/plugin/index-vendor.RxNCHXH5.js",
-      sdkSrc: "/plugin/index.DBQ61Ofy.js",
+      sdkSrc: "/plugin/index.u6DjRQiO.js",
       styleSrc: "/plugin/index.Bi_tNvAp.css",
     });
     isInjected = true;
   };
 
-  console.log('iframe.onload:', iframe.onload);
-  
   
   if (iframe.onload) {
-    console.log('onload1 - executing immediately');
     loadSDK();
-  } else {
-    console.log('iframe.onload is null, setting up event listener');
-  }
+  } 
 
   iframe.onload = () => {
-    console.log('onload2 - event fired');
     if (!isInjected) {
-      console.log('onload2 - loading SDK');
       loadSDK();
-    } else {
-      console.log('onload2 - SDK already injected');
     }
   };
 
-  // 백업: iframe이 이미 로드된 상태일 수 있으므로
+  // NOTE: iframe이 이미 로드된 상태일 수 있으므로
   setTimeout(() => {
-    console.log('setTimeout fallback check, isInjected:', isInjected);
     if (!isInjected) {
-      console.log('setTimeout fallback - loading SDK');
       loadSDK();
     }
   }, 100);
