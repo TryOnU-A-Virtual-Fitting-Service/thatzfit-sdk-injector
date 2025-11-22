@@ -68,7 +68,7 @@ const injectSDK = () => {
     };
 
     const vendorFileName = "index-vendor.RxNCHXH5.js";
-    const sdkFileName = "index.BkTXPblv.js";
+    const sdkFileName = "index.HXucb1aF.js";
     const styleFileName = "index.Dh-C2C5M.css";
 
     injectIframe({
