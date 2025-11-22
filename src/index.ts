@@ -54,8 +54,8 @@ const injectSDK = () => {
         <html lang="ko">
           <head>
             <meta charset="utf-8">
-            <script async type="module" src="${cdnHost}${vendorSrc}"></script>
-            <script async type="module" src="${cdnHost}${sdkSrc}"></script>
+            <script defer type="module" src="${cdnHost}${vendorSrc}"></script>
+            <script defer type="module" src="${cdnHost}${sdkSrc}"></script>
             <link rel="stylesheet" href="${cdnHost}${styleSrc}">
           </head>
           <body>
@@ -74,10 +74,9 @@ const injectSDK = () => {
     isInjected = true;
   };
 
-  
   if (iframe.onload) {
     loadSDK();
-  } 
+  }
 
   iframe.onload = () => {
     if (!isInjected) {
