@@ -41,6 +41,7 @@ const injectSDK = () => {
       styleSrc: string;
     }) => {
       const cdnHost = "https://cdn.thatzfit.com";
+
       const iframeDocument =
         iframe.contentDocument || iframe.contentWindow?.document;
 
@@ -66,10 +67,14 @@ const injectSDK = () => {
       iframeDocument.close();
     };
 
+    const vendorFileName = "index-vendor.RxNCHXH5.js";
+    const sdkFileName = "index.BkTXPblv.js";
+    const styleFileName = "index.Dh-C2C5M.css";
+
     injectIframe({
-      vendorSrc: "/plugin/index-vendor.RxNCHXH5.js",
-      sdkSrc: "/plugin/index.u6DjRQiO.js",
-      styleSrc: "/plugin/index.Bi_tNvAp.css",
+      vendorSrc: `/plugin/${vendorFileName}`,
+      sdkSrc: `/plugin/${sdkFileName}`,
+      styleSrc: `/plugin/${styleFileName}`,
     });
     isInjected = true;
   };
