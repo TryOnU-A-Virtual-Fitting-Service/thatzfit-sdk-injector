@@ -20,7 +20,7 @@ const injectSDK = () => {
 
     pluginDiv.innerHTML = `
     <div id="thatzfit-entry"></div>
-    <div id="thatzfit-iframe-wrapper" style="display: none;">
+    <div id="thatzfit-iframe-wrapper">
       <iframe id="thatzfit-iframe" title="Thatzfit" style="position:relative !important;z-index:999999 !important;display:block !important;color-scheme:normal !important;white-space:normal !important;border:none !important;"></iframe>
     </div>
     `;
@@ -41,6 +41,7 @@ const injectSDK = () => {
       styleSrc: string;
     }) => {
       const cdnHost = "https://cdn.thatzfit.com";
+
       const iframeDocument =
         iframe.contentDocument || iframe.contentWindow?.document;
 
@@ -54,8 +55,8 @@ const injectSDK = () => {
         <html lang="ko">
           <head>
             <meta charset="utf-8">
-            <script async type="text/javascript" src="${cdnHost}${vendorSrc}" charset="utf-8"></script>
-            <script async type="text/javascript" src="${cdnHost}${sdkSrc}" charset="utf-8"></script>
+            <script defer type="module" src="${cdnHost}${vendorSrc}"></script>
+            <script defer type="module" src="${cdnHost}${sdkSrc}"></script>
             <link rel="stylesheet" href="${cdnHost}${styleSrc}">
           </head>
           <body>
@@ -66,10 +67,14 @@ const injectSDK = () => {
       iframeDocument.close();
     };
 
+    const vendorFileName = "index-vendor.RxNCHXH5.js";
+    const sdkFileName = "index.BWH8-fMv.js";
+    const styleFileName = "index.Dh-C2C5M.css";
+
     injectIframe({
-      vendorSrc: "/plugin/index-vendor.rEzaNHGU.js",
-      sdkSrc: "/plugin/index.DXvUI0MT.js",
-      styleSrc: "/plugin/index.F1Z9AX_U.css",
+      vendorSrc: `/plugin/${vendorFileName}`,
+      sdkSrc: `/plugin/${sdkFileName}`,
+      styleSrc: `/plugin/${styleFileName}`,
     });
     isInjected = true;
   };
@@ -83,6 +88,13 @@ const injectSDK = () => {
       loadSDK();
     }
   };
+
+  // NOTE: iframe이 이미 로드된 상태일 수 있으므로
+  setTimeout(() => {
+    if (!isInjected) {
+      loadSDK();
+    }
+  }, 100);
 };
 
 injectSDK();
