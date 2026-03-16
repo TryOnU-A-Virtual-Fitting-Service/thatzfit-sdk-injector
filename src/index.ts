@@ -1,3 +1,13 @@
+type PluginAssetManifest = {
+  entryFile: string;
+  cssFiles: string[];
+  modulePreloadFiles: string[];
+};
+
+declare const __THATZFIT_PLUGIN_ASSET_MANIFEST__: PluginAssetManifest;
+
+const pluginAssetManifest = __THATZFIT_PLUGIN_ASSET_MANIFEST__;
+
 const injectSDK = () => {
   const userAgent = window.navigator.userAgent;
 
@@ -31,16 +41,20 @@ const injectSDK = () => {
   let isInjected = false;
 
   const loadSDK = () => {
-    const injectIframe = ({
-      vendorSrc,
-      sdkSrc,
-      styleSrc,
-    }: {
-      vendorSrc: string;
-      sdkSrc: string;
-      styleSrc: string;
-    }) => {
+    const injectIframe = () => {
       const cdnHost = "https://cdn.thatzfit.com";
+      const preloadLinks = pluginAssetManifest.modulePreloadFiles
+        .map(
+          (file) =>
+            `            <link rel="modulepreload" href="${cdnHost}${file}">`,
+        )
+        .join("\n");
+      const styleLinks = pluginAssetManifest.cssFiles
+        .map(
+          (file) =>
+            `            <link rel="stylesheet" href="${cdnHost}${file}">`,
+        )
+        .join("\n");
 
       const iframeDocument =
         iframe.contentDocument || iframe.contentWindow?.document;
@@ -55,9 +69,9 @@ const injectSDK = () => {
         <html lang="ko">
           <head>
             <meta charset="utf-8">
-            <script defer type="module" src="${cdnHost}${vendorSrc}"></script>
-            <script defer type="module" src="${cdnHost}${sdkSrc}"></script>
-            <link rel="stylesheet" href="${cdnHost}${styleSrc}">
+${preloadLinks}
+${styleLinks}
+            <script defer type="module" src="${cdnHost}${pluginAssetManifest.entryFile}"></script>
           </head>
           <body>
             <div id="thatzfit-root"></div>
@@ -67,15 +81,7 @@ const injectSDK = () => {
       iframeDocument.close();
     };
 
-    const vendorFileName = "index-vendor.RxNCHXH5.js";
-    const sdkFileName = "index.BWH8-fMv.js";
-    const styleFileName = "index.Dh-C2C5M.css";
-
-    injectIframe({
-      vendorSrc: `/plugin/${vendorFileName}`,
-      sdkSrc: `/plugin/${sdkFileName}`,
-      styleSrc: `/plugin/${styleFileName}`,
-    });
+    injectIframe();
     isInjected = true;
   };
 
