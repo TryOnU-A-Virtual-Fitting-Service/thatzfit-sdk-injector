@@ -1,0 +1,78 @@
+name: Deploy SDK injector to R2
+
+on:
+  workflow_dispatch:
+    inputs:
+      fe_ref:
+        description: ThatzFit-FE ref used to generate the asset manifest
+        required: false
+        default: main
+  push:
+    branches:
+      - main
+      - codex/r2-asset-automation
+
+concurrency:
+  group: deploy-sdk-injector-r2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_REGION: auto
+      AWS_DEFAULT_REGION: auto
+      R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
+      R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+      VITE_CDN_HOST: ${{ vars.VITE_CDN_HOST || secrets.CDN_BASE_URL }}
+    steps:
+      - name: Checkout injector
+        uses: actions/checkout@v4
+        with:
+          path: thatzfit-sdk-injector
+
+      - name: Checkout FE
+        uses: actions/checkout@v4
+        with:
+          repository: TryOnU-A-Virtual-Fitting-Service/ThatzFit-FE
+          ref: ${{ inputs.fe_ref || 'main' }}
+          token: ${{ secrets.CI_REPO_TOKEN || github.token }}
+          path: ThatzFit-FE
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build FE manifest
+        working-directory: ThatzFit-FE
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run build
+
+      - name: Build injector
+        working-directory: thatzfit-sdk-injector
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload injector
+        working-directory: thatzfit-sdk-injector
+        run: |
+          test -n "$R2_ENDPOINT_URL"
+          test -n "$R2_BUCKET_NAME"
+          aws s3 cp dist/ThatzfitSDKInjector.js "s3://$R2_BUCKET_NAME/plugin/ThatzfitSDKInjector.js" \
+            --endpoint-url "$R2_ENDPOINT_URL" \
+            --cache-control "public, max-age=60"
+
+      - name: Verify upload
+        run: |
+          aws s3 ls "s3://$R2_BUCKET_NAME/plugin/ThatzfitSDKInjector.js" \
+            --endpoint-url "$R2_ENDPOINT_URL"
