@@ -42,7 +42,7 @@ const injectSDK = () => {
 
   const loadSDK = () => {
     const injectIframe = () => {
-      const cdnHost = "https://cdn.thatzfit.com";
+      const cdnHost = "https://cdn.thatz.fit";
       const preloadLinks = pluginAssetManifest.modulePreloadFiles
         .map(
           (file) =>
